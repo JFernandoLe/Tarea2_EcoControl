@@ -69,6 +69,7 @@ public class CecoD {
                             //System.out.println("tmp tam "+tmp.length);
                             DatagramPacket p = new DatagramPacket(tmpConContador, tmpConContador.length, dst, pto);
                             cl.send(p);
+                            System.out.println("Enviando fragmento " + x);
                             DatagramPacket p1 = new DatagramPacket(new byte[tam], tam);
                             cl.receive(p1);
                             byte[] bp1 = p1.getData();
@@ -81,7 +82,15 @@ public class CecoD {
                         String eco = new String(b_eco);
                         System.out.println("Eco recibido: " + eco);
                     } else {
-                        DatagramPacket p = new DatagramPacket(b, b.length, dst, pto);
+                        byte[] tmp = Arrays.copyOfRange(b,0,b.length);
+                        //Creamos un nuevo arreglo que contendrá el número de paquete
+                        byte[] tmpConContador=new byte[tmp.length+1];
+                        System.arraycopy(tmp, 0, tmpConContador,0,tmp.length);
+                        tmpConContador[tmp.length]=(byte)1;
+
+                        //System.out.println("Paquete:"+x+", bytes enviados: "+tmp.length);
+                        DatagramPacket p = new DatagramPacket(tmpConContador, tmpConContador.length, dst, pto);
+                        
                         cl.send(p);
                         DatagramPacket p1 = new DatagramPacket(new byte[65535], 65535);
                         cl.receive(p1);
